@@ -33,6 +33,7 @@ interface AppState {
 
   addPayment: (payment: Omit<Payment, 'id' | 'created_at'>) => Promise<void>;
   deletePayment: (id: string) => Promise<void>;
+  reset: () => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -217,5 +218,19 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { error } = await supabase.from('payments').delete().eq('id', id);
     if (error) set({ error: error.message });
     else set((state) => ({ payments: state.payments.filter((p) => p.id !== id) }));
+  },
+
+  reset: () => {
+    set({
+      students: [],
+      sessions: [],
+      payments: [],
+      loadingStatus: {
+        students: false,
+        sessions: false,
+        payments: false,
+      },
+      error: null,
+    });
   },
 }));
